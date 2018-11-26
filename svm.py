@@ -16,16 +16,12 @@ def cross_validation(X, y):
     svc.fit(X_train, y_train)
     score = svc.score(X_test, y_test)
     print("予測精度: ",score)
-    print("============ end =============")
     print("======= k-分割交差検証 ======")
     scores = cross_val_score(svc, X_train, y_train, cv=10)
     print("分割時の予測精度: ", scores)
     print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-    print("============ end =============")
 
 def simple_svm(X, y):
-    print('X shape: {}, y shape: {}'.format(X.shape, y.shape))
-    print("X_values: ", X.keys())
     cross_validation(X, y)
     print("================単純な学習後のテスト==================") # 学習データとテストデータの分離
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_size=0.3)
@@ -36,7 +32,6 @@ def simple_svm(X, y):
     print('Test score: {:.3f}, X shape: {}, y shape: {}'.format(svc.score(X_test, y_test), X_test.shape, y_test.shape))
     print('Confusion matrix:\n{}'.format(confusion_matrix(y_train, svc.predict(X_train))))
     print('Confusion matrix:\n{}'.format(confusion_matrix(y_test, svc.predict(X_test))))
-    print("================ end ==================")
 
 def std_svm(X, y):
     print("================標準化した後のテスト==================")
@@ -53,7 +48,6 @@ def std_svm(X, y):
     print('Test score: {:.3f}'.format(svc.score(X_test, y_test)))
     print('Confusion matrix:\n{}'.format(confusion_matrix(y_train, svc.predict(X_train))))
     print('Confusion matrix:\n{}'.format(confusion_matrix(y_test, svc.predict(X_test))))
-    print("================ end ==================")
 
 def grid_svm(X, y):
     print("================グリッドサーチを行った後のテスト==================")
@@ -70,7 +64,6 @@ def grid_svm(X, y):
     print('Confusion matrix:\n{}'.format(confusion_matrix(y_test, svc_grid_search.predict(X_test))))
     print('Best parameters: {}'.format(svc_grid_search.best_params_))
     print('Best estimator: {}'.format(svc_grid_search.best_estimator_))
-    print("================ end ==================")
 
 def drop_column(df):
     df = df.drop([
@@ -97,7 +90,7 @@ X = df.drop("score_dummy", axis=1) # score_dummy以外の列を抽出
 y = df["score_dummy"] # score_dummyの列を1次元に展開
 
 simple_svm(X, y)
-#std_svm(X, y)
+std_svm(X, y)
 #grid_svm(X, y)
 
 
@@ -112,8 +105,9 @@ df = df.drop([
 X = df.drop("score_dummy", axis=1) # score_dummy以外の列を抽出
 y = df["score_dummy"] # score_dummyの列を1次元に展開
 
-#simple_svm(X, y)
-#std_svm(X, y)
+print('\n\n')
+simple_svm(X, y)
+std_svm(X, y)
 #grid_svm(X, y)
 
 
