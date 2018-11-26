@@ -1,2 +1,3 @@
 *.csv
 /decision_tree_image/
+/__pycache__/
