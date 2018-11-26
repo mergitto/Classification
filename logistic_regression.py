@@ -140,14 +140,13 @@ def add_dummy_score(df):
     df.loc[df["score_std"] < -0.24, "score_dummy"] = 1 # Low
     return df
 
-if True:
+if False:
     df = pd.read_csv('./questionnaire_evaluations_from_1031_to_1109_all.csv')
     df = drop_column(df)
     df = add_dummy_score(df)
-    df = df.drop("score_std", axis=1) # score_dummyはscore_stdで予測できてしまうので削除
     X = df.drop([
             "score_dummy", "report_created_date", "bm25_sum",
-            "type_id", "shokushu_id"
+            "type_id", "shokushu_id", "score_std"
             #"tfidf_top_average", "recommend_level",
         ], axis=1) # score_dummy以外の列を抽出
     print(X.keys())
@@ -167,7 +166,12 @@ if False:
     df = df.drop("score_std", axis=1) # score_dummyはscore_stdで予測できてしまうので削除
     X = df.drop(["score_dummy", "bm25_sum", "tfidf_top_average", "recommend_level", "report_created_date"], axis=1) # score_dummy以外の列を抽出
     y = df["score_dummy"].astype(int) # score_dummyの列を抽出
-    df = decision_tree_classifier(X, y, df, save_file_name="sum.pdf", learning_curve_name="decision_tree_image/sum_curve.pdf")
+    tree = Tree(X, y)
+    tree.cross_validation()
+    tree.grid_search()
+    tree.learning_curve_show(save_file_name="./decision_tree_image/sum_curve.pdf")
+    tree.decision_tree_classifier(save_file_name="decision_tree_image/sum.pdf")
+    tree.logistic_regression()
 
     df = pd.read_csv('./sum_jsd.csv')
     df["topic"] = 0
