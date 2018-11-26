@@ -8,9 +8,6 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
-# 回帰木
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
 
 class Tree():
     def __init__(self, X, y):
@@ -20,6 +17,14 @@ class Tree():
     def train_test_data_split(self, random_state=1, test_size=0.3):
         from sklearn.model_selection import train_test_split
         return train_test_split(self.X, self.y,random_state=random_state, test_size=test_size)
+
+    def std_X(self, X_train, X_test):
+        # データの標準化処理
+        sc = StandardScaler()
+        sc.fit(X_train)
+        X_train_std = sc.transform(X_train)
+        X_test_std = sc.transform(X_test)
+        return X_train_std, X_test_std
 
     def cross_validation(self):
         print("    ======= 交差検証 ======")
@@ -44,7 +49,7 @@ class Tree():
         print("    ============ end =============")
 
     def learning_curve_show(self, save_file_name):
-        X_train,X_test,y_train,y_test = train_test_split(self.X, self.y,random_state=1, test_size=0.2)
+        X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=1, test_size=0.3)
         from sklearn.model_selection import learning_curve
         from sklearn.pipeline import make_pipeline
         pipe_lr = make_pipeline(StandardScaler(),
@@ -77,19 +82,12 @@ class Tree():
         plt.ylim([0.5, 1.0])
         plt.savefig(save_file_name)
 
-    def decision_tree_classifier(self, df, save_file_name="", learning_curve_name=""):
+    def decision_tree_classifier(self, df, save_file_name=""):
         # 決定木による学習
         print("============== 決定木 ===============")
-        #self.cross_validation()
-        #self.grid_search()
-        #self.learning_curve_show(learning_curve_name)
 
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=0, test_size=0.3)
-        # データの標準化処理
-        sc = StandardScaler()
-        sc.fit(X_train)
-        X_train_std = sc.transform(X_train)
-        X_test_std = sc.transform(X_test)
+        X_train_std, X_test_std = self.std_X(X_train, X_test)
 
         treeModel = DecisionTreeClassifier(max_depth=3, random_state=0)
         treeModel.fit(X_train_std, y_train)
@@ -110,13 +108,10 @@ class Tree():
         return data_predicted
 
     def logistic_regression(self, df):
+        from sklearn.linear_model import LogisticRegression
         print("============== 回帰木 ===============")
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=0, test_size=0.3)
-        # データの標準化処理
-        sc = StandardScaler()
-        sc.fit(X_train)
-        X_train_std = sc.transform(X_train)
-        X_test_std = sc.transform(X_test)
+        X_train_std, X_test_std = self.std_X(X_train, X_test)
 
         logisticModel = LogisticRegression()
         logisticModel.fit(X_train_std, y_train)
@@ -162,7 +157,10 @@ if True:
     print(X.keys())
     y = df["score_dummy"].astype(int) # score_dummyの列を抽出
     tree = Tree(X, y)
-    tree.decision_tree_classifier(df, save_file_name="decision_tree_questionnaire.pdf", learning_curve_name="decision_tree_image/qustion_learning_curve.pdf")
+    tree.decision_tree_classifier(df, save_file_name="decision_tree_image/decision_tree_questionnaire.pdf")
+    tree.cross_validation()
+    tree.grid_search()
+    tree.learning_curve_show(save_file_name="./decision_tree_image/qustion_learning_curve.pdf")
     tree.logistic_regression(df)
 
 if False:
