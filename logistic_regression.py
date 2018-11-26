@@ -140,3 +140,8 @@ def add_dummy_score(df):
     df.loc[df["score_std"] < -0.24, "score_dummy"] = 1 # Low
     return df
 
+def preprocess(df):
+    df = drop_column(df)
+    df = add_dummy_score(df)
+    return df
+
