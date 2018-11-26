@@ -82,7 +82,7 @@ class Tree():
         plt.ylim([0.5, 1.0])
         plt.savefig(save_file_name)
 
-    def decision_tree_classifier(self, df, save_file_name=""):
+    def decision_tree_classifier(self, save_file_name=""):
         # 決定木による学習
         print("============== 決定木 ===============")
 
@@ -100,14 +100,12 @@ class Tree():
         print(importance)
         treeModel.fit(self.X, self.y)
         predicted = pd.DataFrame({'TreePredicted':treeModel.predict(self.X)})
-        data_predicted = pd.concat([df, predicted], axis =1)
         if True:
             viz = dtreeviz(treeModel, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=["high", "low"])
             viz.save(save_file_name)
         print("============== end ===============")
-        return data_predicted
 
-    def logistic_regression(self, df):
+    def logistic_regression(self):
         from sklearn.linear_model import LogisticRegression
         print("============== 回帰木 ===============")
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=0, test_size=0.3)
@@ -118,7 +116,6 @@ class Tree():
         predicted = pd.DataFrame({'LogisPredicted':logisticModel.predict(X_test_std)})
         print("訓練データ:", metrics.accuracy_score(y_train, logisticModel.predict(X_train_std)))
         print("testデータ:", metrics.accuracy_score(y_test, logisticModel.predict(X_test_std)))
-        data_predicted = pd.concat([df, predicted], axis =1)
 
         print('\n')
         if False:
@@ -127,7 +124,6 @@ class Tree():
             plt.ylabel('recommend_rank')
             plt.show()
         print("============== end ===============")
-        return data_predicted
 
 def drop_column(df):
     df = df.drop([
@@ -157,11 +153,11 @@ if True:
     print(X.keys())
     y = df["score_dummy"].astype(int) # score_dummyの列を抽出
     tree = Tree(X, y)
-    tree.decision_tree_classifier(df, save_file_name="decision_tree_image/decision_tree_questionnaire.pdf")
     tree.cross_validation()
     tree.grid_search()
     tree.learning_curve_show(save_file_name="./decision_tree_image/qustion_learning_curve.pdf")
-    tree.logistic_regression(df)
+    tree.decision_tree_classifier(save_file_name="decision_tree_image/decision_tree_questionnaire.pdf")
+    tree.logistic_regression()
 
 if False:
     df = pd.read_csv('./sum.csv')
