@@ -6,8 +6,6 @@ from sklearn.metrics import confusion_matrix
 # 決定木のためのモジュール読み込み
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
 
 class Tree():
     def __init__(self, X, y):
@@ -27,6 +25,7 @@ class Tree():
         return X_train_std, X_test_std
 
     def cross_validation(self):
+        from sklearn.model_selection import cross_val_score
         print("    ======= 交差検証 ======")
         print("    [max_depth, score_mean]")
         for max_depth in [2, 3, 4, 5, 6, 7, 8, 9]:
@@ -38,6 +37,7 @@ class Tree():
         print("    ============ end =============")
 
     def grid_search(self):
+        from sklearn.model_selection import GridSearchCV
         print("    ======= グリッドサーチ ======")
         params = {'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
               'criterion': ['gini', 'entropy']}
