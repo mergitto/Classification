@@ -12,7 +12,8 @@ from sklearn import cross_validation as cv
 def cross_validation(X, y):
     print("======= 交差検証 ======")
     svc = SVC()
-    X_train, X_test, y_train, y_test = cv.train_test_split(X, y, test_size=0.3, random_state=0) svc.fit(X_train, y_train)
+    X_train, X_test, y_train, y_test = cv.train_test_split(X, y, test_size=0.3, random_state=0)
+    svc.fit(X_train, y_train)
     score = svc.score(X_test, y_test)
     print("予測精度: ",score)
     print("============ end =============")
