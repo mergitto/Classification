@@ -153,10 +153,7 @@ class Tree():
         self.df =  self.df.drop(drop_list, axis=1)
 
     def add_dummy_score(self):
-        #df.loc[df["score_std"] > 0.26, "score_dummy"] = 0 # High
-        #df.loc[df["score_std"] < -0.74, "score_dummy"] = 1 # Low
-        #df.loc[(df["score_std"] <= 0.26) & (df["score_std"] >= -0.74), "score_dummy"] = 2 # Newtral
-        self.df.loc[self.df["score_std"] >= -0.24, "score_dummy"] = 0 # High
-        self.df.loc[self.df["score_std"] < -0.24, "score_dummy"] = 1 # Low
+        self.df.loc[self.df["score_std"] >= 0.24, "score_dummy"] = 0 # High
+        self.df.loc[self.df["score_std"] < 0.24, "score_dummy"] = 1 # Low
         return self.df
 
