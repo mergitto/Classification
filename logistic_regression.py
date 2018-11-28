@@ -8,9 +8,14 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 
 class Tree():
-    def __init__(self, X, y):
-        self.X = X
-        self.y = y
+    def __init__(self, df):
+        self.df = df
+        self.X = pd.DataFrame()
+        self.y = pd.DataFrame()
+
+    def set_X_and_y(self, objective_key=""):
+        self.X = self.df.drop(objective_key, axis=1)
+        self.y = self.df[objective_key].astype(int)
 
     def train_test_data_split(self, random_state=1, test_size=0.3):
         from sklearn.model_selection import train_test_split
@@ -144,23 +149,14 @@ class Tree():
         print('\n')
         print("============== end ===============")
 
-def drop_column(df):
-    df = df.drop([
-            "advice_divide_mecab", "bm25_average", "course_code", "created",
-            "keywords", "modified", "score", "score_min_max", "search_word",
-            "search_word_wakati", "topic", "st_no"], axis=1)
-    return df
+    def drop_columns(self, drop_list):
+        self.df =  self.df.drop(drop_list, axis=1)
 
-def add_dummy_score(df):
-    #df.loc[df["score_std"] > 0.26, "score_dummy"] = 0 # High
-    #df.loc[df["score_std"] < -0.74, "score_dummy"] = 1 # Low
-    #df.loc[(df["score_std"] <= 0.26) & (df["score_std"] >= -0.74), "score_dummy"] = 2 # Newtral
-    df.loc[df["score_std"] >= -0.24, "score_dummy"] = 0 # High
-    df.loc[df["score_std"] < -0.24, "score_dummy"] = 1 # Low
-    return df
-
-def preprocess(df):
-    df = drop_column(df)
-    df = add_dummy_score(df)
-    return df
+    def add_dummy_score(self):
+        #df.loc[df["score_std"] > 0.26, "score_dummy"] = 0 # High
+        #df.loc[df["score_std"] < -0.74, "score_dummy"] = 1 # Low
+        #df.loc[(df["score_std"] <= 0.26) & (df["score_std"] >= -0.74), "score_dummy"] = 2 # Newtral
+        self.df.loc[self.df["score_std"] >= -0.24, "score_dummy"] = 0 # High
+        self.df.loc[self.df["score_std"] < -0.24, "score_dummy"] = 1 # Low
+        return self.df
 
