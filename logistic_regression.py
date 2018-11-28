@@ -35,18 +35,6 @@ class Tree():
                 'test': metrics.accuracy_score(y_test, forest.predict(X_test_std))
                 }
 
-    def tmp_cross_validation(self, max_depth=2, random_state=0):
-        X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=random_state, test_size=0.3)
-        X_train_std, X_test_std = self.std_X(X_train, X_test)
-
-        treeModel = DecisionTreeClassifier(max_depth=max_depth, random_state=random_state+1)
-        treeModel.fit(X_train_std, y_train)
-        return {
-                'train': metrics.accuracy_score(y_train, treeModel.predict(X_train_std)) ,
-                'test': metrics.accuracy_score(y_test, treeModel.predict(X_test_std))
-                }
-
-
     def cross_validation(self, max_depth=2, save_file_name="decision_tree_image/tmp.pdf"):
         from sklearn.model_selection import cross_val_score
         print("    ======= 交差検証 ======")

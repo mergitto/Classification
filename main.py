@@ -34,8 +34,7 @@ train_test = {}
 for index_y, max_depth in enumerate(range(2, 10)):
     train_test[index_y] = []
     for index_x, i in enumerate(range(0,10)):
-        train_test[index_y].append(tree.tmp_cross_validation(max_depth=max_depth, random_state=i))
-        #train_test[index_y].append(tree.tmp_random_forest(min_samples_leaf=max_depth,random_state=i))
+        train_test[index_y].append(tree.tmp_random_forest(min_samples_leaf=max_depth,random_state=i))
 
 for t in train_test.values():
     train = 0
