@@ -70,6 +70,7 @@ def drop_column(df):
             "advice_divide_mecab", "bm25_average", "course_code", "created",
             "keywords", "modified", "score", "score_min_max", "search_word",
             "type_id", "shokushu_id",
+            "info_date", "write_date", "first_date", "second_date", "final_date", "decision_date",
             "search_word_wakati", "topic", "st_no"], axis=1)
     return df
 
