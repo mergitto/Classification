@@ -24,16 +24,20 @@ class Tree():
         X_test_std = sc.transform(X_test)
         return X_train_std, X_test_std
 
-    def tmp_random_forest(self, random_state=0, min_samples_leaf=3):
+    def random_forest(self, random_state=0, min_samples_leaf=3, max_depth=2):
         from sklearn.ensemble import RandomForestClassifier
         X_train, X_test, y_train, y_test = self.train_test_data_split(random_state=random_state, test_size=0.3)
         X_train_std, X_test_std = self.std_X(X_train, X_test)
-        forest = RandomForestClassifier(min_samples_leaf=min_samples_leaf, random_state=random_state+1)
+        forest = RandomForestClassifier(
+                min_samples_leaf=min_samples_leaf,
+                random_state=random_state+1,
+                max_depth=max_depth)
         forest.fit(X_train_std, y_train)
-        return {
+        score = {
                 'train': metrics.accuracy_score(y_train, forest.predict(X_train_std)) ,
                 'test': metrics.accuracy_score(y_test, forest.predict(X_test_std))
-                }
+            }
+        print(score)
 
     def cross_validation(self, max_depth=2, save_file_name="decision_tree_image/tmp.pdf"):
         from sklearn.model_selection import cross_val_score
