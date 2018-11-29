@@ -50,7 +50,7 @@ class Tree():
         score = cross_val_score(estimator = clf, X = self.X, y = self.y, cv = 5)
         plt.figure()
         viz = dtreeviz(clf, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=["high", "low"])
-        viz.save("decision_tree_image/cross_decision_tree_{}.pdf".format(max_depth))
+        viz.save("tree_image/cross_decision_tree_{}.pdf".format(max_depth))
         plt.close()
 
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=max_depth, test_size=0.3)
@@ -118,11 +118,9 @@ class Tree():
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_sizes, train_scores, test_scores = learning_curve(
                     estimator=pipe_lr,
-                    X = X_train_std,
-                    y = y_train,
+                    X = X_train_std, y = y_train,
                     train_sizes=np.linspace(0.1, 1.0, 10),
-                    cv=10,
-                    n_jobs=1 )
+                    cv=10, n_jobs=1 )
         train_mean = np.mean(train_scores, axis=1)
         train_std = np.std(train_scores, axis=1)
         test_mean = np.mean(test_scores, axis=1)
@@ -138,6 +136,35 @@ class Tree():
         plt.legend(loc="lower right")
         plt.tight_layout()
         plt.ylim([0.5, 1.0])
+        plt.savefig(save_file_name)
+        plt.close()
+
+    def validation_curve_show(self, save_file_name, param_range=[], param_name="decision_max_depth", clf_name="decision"):
+        X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=1, test_size=0.3)
+        X_train_std, X_test_std = self.std_X(X_train, X_test)
+        from sklearn.model_selection import validation_curve
+        from sklearn.pipeline import make_pipeline
+        clf = self.set_model(clf_name=clf_name)
+        pipe_lr = make_pipeline(StandardScaler(), clf)
+        train_scores, test_scores = validation_curve(
+                estimator=pipe_lr,
+                X=X_train_std, y=y_train,
+                param_name=param_name, param_range=param_range, cv=10)
+        train_mean = np.mean(train_scores, axis=1)
+        train_std = np.std(train_scores, axis=1)
+        test_mean = np.mean(test_scores, axis=1)
+        test_std = np.std(test_scores, axis=1)
+        plt.figure()
+        plt.plot(param_range, train_mean, color="blue", marker="o", markersize=5, label="training accuracy")
+        plt.fill_between(param_range, train_mean + train_std, train_mean - train_std, alpha=0.15, color="blue")
+        plt.plot(param_range, test_mean, color="green", marker="o", markersize=5, label="test accuracy")
+        plt.fill_between(param_range, test_mean + test_std, test_mean - test_std, alpha=0.15, color="green")
+        plt.grid()
+        plt.xscale('log')
+        plt.legend(loc="lower right")
+        plt.xlabel(param_name)
+        plt.ylabel("Accuracy")
+        plt.tight_layout()
         plt.savefig(save_file_name)
         plt.close()
 
