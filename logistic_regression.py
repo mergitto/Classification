@@ -87,7 +87,7 @@ class Tree():
         print("   ",clf.best_params_)
         print("    ============ end =============")
 
-    def set_model(self, clf_name="decision", max_depth=2, C=0.001):
+    def get_model(self, clf_name="decision", max_depth=2, C=0.001):
         if clf_name == "decision":
             clf = DecisionTreeClassifier(
                     class_weight=None, criterion='gini', max_depth=max_depth, max_features=None, max_leaf_nodes=None,
@@ -114,7 +114,7 @@ class Tree():
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import learning_curve
         from sklearn.pipeline import make_pipeline
-        clf = self.set_model(clf_name=clf_name, max_depth=max_depth, C=C)
+        clf = self.get_model(clf_name=clf_name, max_depth=max_depth, C=C)
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_sizes, train_scores, test_scores = learning_curve(
                     estimator=pipe_lr,
@@ -144,7 +144,7 @@ class Tree():
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import validation_curve
         from sklearn.pipeline import make_pipeline
-        clf = self.set_model(clf_name=clf_name)
+        clf = self.get_model(clf_name=clf_name)
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_scores, test_scores = validation_curve(
                 estimator=pipe_lr,

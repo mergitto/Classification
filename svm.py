@@ -108,7 +108,7 @@ class Classification():
         print('Best parameters: {}'.format(svc_grid_search.best_params_))
         print('Best estimator: {}'.format(svc_grid_search.best_estimator_))
 
-    def set_model(self, clf_name="svm", C=10, gamma=0.01, n_neighbors=2):
+    def get_model(self, clf_name="svm", C=10, gamma=0.01, n_neighbors=2):
         if clf_name == "svm":
             clf = SVC(C=C, cache_size=200, class_weight=None, coef0=0.0,
                     decision_function_shape=None, degree=3, gamma=gamma, kernel='rbf',
@@ -125,7 +125,7 @@ class Classification():
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import learning_curve
         from sklearn.pipeline import make_pipeline
-        clf = self.set_model(clf_name=clf_name, C=C, gamma=gamma, n_neighbors=n_neighbors)
+        clf = self.get_model(clf_name=clf_name, C=C, gamma=gamma, n_neighbors=n_neighbors)
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_sizes, train_scores, test_scores = learning_curve(
                     estimator=pipe_lr,
@@ -157,7 +157,7 @@ class Classification():
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import validation_curve
         from sklearn.pipeline import make_pipeline
-        clf = self.set_model(clf_name=clf_name)
+        clf = self.get_model(clf_name=clf_name)
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_scores, test_scores = validation_curve(
                 estimator=pipe_lr,
