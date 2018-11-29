@@ -27,6 +27,7 @@ classification.grid_svm()
 C =     [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]
 gamma = [1000, 100, 10, 1, 0.1, 0.01, 0.001, 0.0001]
 n_neighbors = [1,2,3,4,5,6,7,8]
+
 for i in range(0, 8):
     print("C: ", C[i], "gamma: ", gamma[i])
     classification.learning_curve_show(
@@ -39,6 +40,13 @@ classification.learning_curve_show( save_file_name="./classifier_image/learning_
 classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_small_G_large.pdf".format("svm"), clf_name="svm", C=0.001, gamma=1000)
 classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_large_G_small.pdf".format("svm"), clf_name="svm", C=1000, gamma=0.001)
 classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_large_G_large.pdf".format("svm"), clf_name="svm", C=1000, gamma=1000)
+
+classification.validation_curve_show(save_file_name="./classifier_image/validation_curve_svc_C.pdf",
+        param_range=C, param_name="svc__C", clf_name="svm")
+classification.validation_curve_show(save_file_name="./classifier_image/validation_curve_svc_gamma.pdf",
+        param_range=gamma, param_name="svc__gamma", clf_name="svm")
+classification.validation_curve_show(save_file_name="./classifier_image/validation_curve_knn_n_nei.pdf",
+        param_range=n_neighbors, param_name="kneighborsclassifier__n_neighbors", clf_name="knn")
 
 
 df = pd.read_csv('./questionnaire_evaluations_preprocessed_all.csv')
@@ -82,3 +90,9 @@ classification.learning_curve_show( save_file_name="./classifier_image_all/learn
 classification.learning_curve_show( save_file_name="./classifier_image_all/learning_curve_{}_C_large_G_large.pdf".format("svm"),
         clf_name="svm", C=1000, gamma=1000)
 
+classification.validation_curve_show(save_file_name="./classifier_image_all/validation_curve_svc_C.pdf",
+        param_range=C, param_name="svc__C", clf_name="svm")
+classification.validation_curve_show(save_file_name="./classifier_image_all/validation_curve_svc_gamma.pdf",
+        param_range=gamma, param_name="svc__gamma", clf_name="svm")
+classification.validation_curve_show(save_file_name="./classifier_image_all/validation_curve_knn_n_nei.pdf",
+        param_range=n_neighbors, param_name="kneighborsclassifier__n_neighbors", clf_name="knn")
