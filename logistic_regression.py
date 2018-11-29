@@ -100,6 +100,14 @@ class Tree():
                     intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
                     penalty='l2', random_state=None, solver='liblinear', tol=0.0001,
                     verbose=0, warm_start=False)
+        elif clf_name == "random_forest":
+            clf = RandomForestClassifier(
+                    bootstrap=True, class_weight=None, criterion='gini',
+                    max_depth=max_depth, max_features='auto', max_leaf_nodes=None,
+                    min_impurity_split=1e-07, min_samples_leaf=1,
+                    min_samples_split=2, min_weight_fraction_leaf=0.0,
+                    n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+                    verbose=0, warm_start=False)
         return clf
 
     def learning_curve_show(self, save_file_name, max_depth=2, clf_name="decision", C=0.001):
