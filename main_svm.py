@@ -24,6 +24,23 @@ classification.simple_svm()
 classification.std_svm()
 classification.grid_svm()
 
+C =     [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]
+gamma = [1000, 100, 10, 1, 0.1, 0.01, 0.001, 0.0001]
+n_neighbors = [1,2,3,4,5,6,7,8]
+for i in range(0, 8):
+    print("C: ", C[i], "gamma: ", gamma[i])
+    classification.learning_curve_show(
+            save_file_name="./classifier_image/learning_curve_{}_C{}_G{}.pdf".format("svm", C[i], gamma[i]),
+            clf_name="svm", C=C[i], gamma=gamma[i])
+    classification.learning_curve_show(
+            save_file_name="./classifier_image/learning_curve_{}_n_nei{}.pdf".format("knn", n_neighbors[i]),
+            clf_name="knn", n_neighbors=n_neighbors[i])
+classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_small_G_small.pdf".format("svm"), clf_name="svm", C=0.001, gamma=0.001)
+classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_small_G_large.pdf".format("svm"), clf_name="svm", C=0.001, gamma=1000)
+classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_large_G_small.pdf".format("svm"), clf_name="svm", C=1000, gamma=0.001)
+classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_large_G_large.pdf".format("svm"), clf_name="svm", C=1000, gamma=1000)
+
+
 df = pd.read_csv('./questionnaire_evaluations_preprocessed_all.csv')
 classification = Classification(df)
 drop_list = [
@@ -47,4 +64,21 @@ classification.set_X_and_y(objective_key="score_dummy")
 classification.simple_svm()
 classification.std_svm()
 classification.grid_svm()
+
+for i in range(0, 8):
+    print("C: ", C[i], "gamma: ", gamma[i])
+    classification.learning_curve_show(
+            save_file_name="./classifier_image_all/learning_curve_{}_C{}_G{}.pdf".format("svm", C[i], gamma[i]),
+            clf_name="svm", C=C[i], gamma=gamma[i])
+    classification.learning_curve_show(
+            save_file_name="./classifier_image_all/learning_curve_{}_n_nei{}.pdf".format("knn", n_neighbors[i]),
+            clf_name="knn", n_neighbors=n_neighbors[i])
+classification.learning_curve_show( save_file_name="./classifier_image_all/learning_curve_{}_C_small_G_small.pdf".format("svm"),
+        clf_name="svm", C=0.001, gamma=0.001)
+classification.learning_curve_show( save_file_name="./classifier_image_all/learning_curve_{}_C_small_G_large.pdf".format("svm"),
+        clf_name="svm", C=0.001, gamma=1000)
+classification.learning_curve_show( save_file_name="./classifier_image_all/learning_curve_{}_C_large_G_small.pdf".format("svm"),
+        clf_name="svm", C=1000, gamma=0.001)
+classification.learning_curve_show( save_file_name="./classifier_image_all/learning_curve_{}_C_large_G_large.pdf".format("svm"),
+        clf_name="svm", C=1000, gamma=1000)
 
