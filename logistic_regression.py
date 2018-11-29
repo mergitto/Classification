@@ -30,11 +30,10 @@ class Tree():
         X_test_std = sc.transform(X_test)
         return X_train_std, X_test_std
 
-    def random_forest(self, random_state=0, min_samples_leaf=3, max_depth=2):
+    def random_forest(self, random_state=0, max_depth=2):
         X_train, X_test, y_train, y_test = self.train_test_data_split(random_state=random_state, test_size=0.3)
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         forest = RandomForestClassifier(
-                min_samples_leaf=min_samples_leaf,
                 random_state=random_state+1,
                 max_depth=max_depth)
         forest.fit(X_train_std, y_train)
@@ -112,13 +111,14 @@ class Tree():
 
     def learning_curve_show(self, save_file_name, max_depth=2, clf_name="decision", C=0.001):
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=1, test_size=0.3)
+        X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import learning_curve
         from sklearn.pipeline import make_pipeline
         clf = self.set_model(clf_name=clf_name, max_depth=max_depth, C=C)
         pipe_lr = make_pipeline(StandardScaler(), clf)
         train_sizes, train_scores, test_scores = learning_curve(
                     estimator=pipe_lr,
-                    X = X_train,
+                    X = X_train_std,
                     y = y_train,
                     train_sizes=np.linspace(0.1, 1.0, 10),
                     cv=10,
