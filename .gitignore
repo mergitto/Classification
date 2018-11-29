@@ -1,3 +1,5 @@
 *.csv
-/decision_tree_image/
+/tree_image/
+/tree_image_all/
+/classifier_image/
 /__pycache__/
