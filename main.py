@@ -52,8 +52,7 @@ tree.logistic_regression()
 df = pd.read_csv('./questionnaire_evaluations_preprocessed_all.csv')
 drop_list = [
         "report_created_date", "bm25_sum",
-        "type_id", "shokushu_id", "score_std",
-        "recommend_level", "tfidf_top_average",
+        "type_id", "shokushu_id", "score_std", "recommend_level", "tfidf_top_average",
         "info_date", "write_date", "first_date", "second_date", "final_date", "decision_date",
         "advice_divide_mecab", "bm25_average", "course_code", "created",
         "keywords", "modified", "score", "score_min_max", "search_word",
