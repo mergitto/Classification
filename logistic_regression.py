@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 from sklearn import metrics
 from dtreeviz.trees import *
 from sklearn.metrics import confusion_matrix
-# 決定木のためのモジュール読み込み
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 
 class Tree():
     def __init__(self, df):
@@ -30,7 +31,6 @@ class Tree():
         return X_train_std, X_test_std
 
     def random_forest(self, random_state=0, min_samples_leaf=3, max_depth=2):
-        from sklearn.ensemble import RandomForestClassifier
         X_train, X_test, y_train, y_test = self.train_test_data_split(random_state=random_state, test_size=0.3)
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         forest = RandomForestClassifier(
@@ -71,19 +71,43 @@ class Tree():
         print("   ",clf.best_estimator_)
         print("   best_score: ",clf.best_score_)
         print("   ",clf.best_params_)
+
+        params = {'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}
+        clf = GridSearchCV(LogisticRegression(), params, cv = 10)
+        clf.fit(X = self.X, y = self.y)
+        print("   ",clf.best_estimator_)
+        print("   best_score: ",clf.best_score_)
+        print("   ",clf.best_params_)
+
+        params = {'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
+                'n_estimators': [10, 100]}
+        clf = GridSearchCV(RandomForestClassifier(), params, cv = 10)
+        clf.fit(X = self.X, y = self.y)
+        print("   ",clf.best_estimator_)
+        print("   best_score: ",clf.best_score_)
+        print("   ",clf.best_params_)
         print("    ============ end =============")
 
-    def learning_curve_show(self, save_file_name, max_depth=2):
+    def set_model(self, clf_name="decision", max_depth=2, C=0.001):
+        if clf_name == "decision":
+            clf = DecisionTreeClassifier(
+                    class_weight=None, criterion='gini', max_depth=max_depth, max_features=None, max_leaf_nodes=None,
+                    min_impurity_split=1e-07, min_samples_leaf=1, min_samples_split=2, min_weight_fraction_leaf=0.0,
+                    presort=False, random_state=None, splitter='best')
+        elif clf_name == "regression":
+            clf = LogisticRegression(
+                    C=C, class_weight=None, dual=False, fit_intercept=True,
+                    intercept_scaling=1, max_iter=100, multi_class='ovr', n_jobs=1,
+                    penalty='l2', random_state=None, solver='liblinear', tol=0.0001,
+                    verbose=0, warm_start=False)
+        return clf
+
+    def learning_curve_show(self, save_file_name, max_depth=2, clf_name="decision", C=0.001):
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=1, test_size=0.3)
         from sklearn.model_selection import learning_curve
         from sklearn.pipeline import make_pipeline
-        pipe_lr = make_pipeline(StandardScaler(),
-                        DecisionTreeClassifier(
-                        class_weight=None, criterion='gini', max_depth=max_depth,
-                        max_features=None, max_leaf_nodes=None,
-                        min_impurity_split=1e-07, min_samples_leaf=1,
-                        min_samples_split=2, min_weight_fraction_leaf=0.0,
-                        presort=False, random_state=None, splitter='best'))
+        clf = self.set_model(clf_name=clf_name, max_depth=max_depth, C=C)
+        pipe_lr = make_pipeline(StandardScaler(), clf)
         train_sizes, train_scores, test_scores = learning_curve(
                     estimator=pipe_lr,
                     X = X_train,
@@ -135,7 +159,6 @@ class Tree():
         print("============== end ===============")
 
     def logistic_regression(self):
-        from sklearn.linear_model import LogisticRegression
         print("============== 回帰木 ===============")
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=0, test_size=0.3)
         X_train_std, X_test_std = self.std_X(X_train, X_test)
@@ -153,6 +176,6 @@ class Tree():
         self.df =  self.df.drop(drop_list, axis=1)
 
     def add_dummy_score(self):
-        self.df.loc[self.df["score_std"] >= -0.24, "score_dummy"] = 0 # High
-        self.df.loc[self.df["score_std"] < -0.24, "score_dummy"] = 1 # Low
+        self.df.loc[self.df["score_std"] >= 0.54, "score_dummy"] = 0 # High
+        self.df.loc[self.df["score_std"] < 0.54, "score_dummy"] = 1 # Low
 
