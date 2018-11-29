@@ -20,11 +20,27 @@ tree = Tree(df)
 tree.add_dummy_score()
 tree.drop_columns(drop_list)
 tree.set_X_and_y(objective_key="score_dummy")
-for i in range(2, 10):
-    tree.decision_tree_classifier(save_file_name="decision_tree_image/decision_tree_questionnaire_{}.pdf".format(i), max_depth=i)
-    tree.learning_curve_show(save_file_name="./decision_tree_image/qustion_learning_curve_{}.pdf".format(i), max_depth=i)
-    tree.cross_validation(save_file_name="decision_tree_image/cross_decision_tree_{}.pdf".format(i), max_depth=i)
-    tree.random_forest(min_samples_leaf=i, random_state=i, max_depth=i)
+max_depth = [2,3,4,5,6,7,8,9]
+C = [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000 ]
+for i in range(0, 8):
+    current_max_depth = max_depth[i]
+    current_C = C[i]
+    print(i+1, "回目の処理")
+    tree.learning_curve_show(
+            save_file_name="./decision_tree_image/qustion_learning_curve_{}_{}.pdf".format("decision",current_max_depth),
+            max_depth=current_max_depth,
+            clf_name="decision")
+    tree.learning_curve_show(
+            save_file_name="./decision_tree_image/qustion_learning_curve_{}_{}.pdf".format("regression",current_C),
+            C=current_C,
+            clf_name="regression")
+    tree.learning_curve_show(
+            save_file_name="./decision_tree_image/qustion_learning_curve_{}_{}.pdf".format("random_forest",current_max_depth),
+            max_depth=current_max_depth,
+            clf_name="random_forest")
+    tree.decision_tree_classifier(save_file_name="decision_tree_image/decision_tree_questionnaire_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
+    tree.cross_validation(save_file_name="decision_tree_image/cross_decision_tree_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
+    tree.random_forest(random_state=i, max_depth=current_max_depth)
 tree.grid_search()
 tree.logistic_regression()
 
@@ -45,17 +61,4 @@ tree.logistic_regression()
 #        #'most_highest_similarity', 'recommend_rank', 'report_created_datetime',
 #        #'similarity_sum', 'tfidf_sum', 'word_length'
 #    ] # 不必要なカラム
-#tree = Tree(df)
-#tree.add_dummy_score()
-#tree.drop_columns(drop_list)
-#tree.set_X_and_y(objective_key="score_dummy")
-#print(tree.X.keys())
-#for i in range(2, 10):
-#    tree.random_forest(min_samples_leaf=i, random_state=i, max_depth=i)
-#    tree.decision_tree_classifier(save_file_name="decision_tree_image/decision_tree_questionnaire_{}.pdf".format(i), max_depth=i)
-#    tree.learning_curve_show(save_file_name="./decision_tree_image/qustion_learning_curve_{}.pdf".format(i), max_depth=i)
-#    tree.cross_validation(save_file_name="decision_tree_image/cross_decision_tree_{}.pdf".format(i), max_depth=i)
-#    tree.random_forest(min_samples_leaf=i, random_state=i, max_depth=i)
-#tree.grid_search()
-#tree.logistic_regression()
 
