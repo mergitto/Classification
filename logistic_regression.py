@@ -50,7 +50,7 @@ class Tree():
         score = cross_val_score(estimator = clf, X = self.X, y = self.y, cv = 5)
         plt.figure()
         viz = dtreeviz(clf, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=["high", "low"])
-        viz.save("tree_image/cross_decision_tree_{}.pdf".format(max_depth))
+        viz.save(save_file_name)
         plt.close()
 
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=max_depth, test_size=0.3)
@@ -139,7 +139,7 @@ class Tree():
         plt.savefig(save_file_name)
         plt.close()
 
-    def validation_curve_show(self, save_file_name, param_range=[], param_name="decision_max_depth", clf_name="decision"):
+    def validation_curve_show(self, save_file_name, param_range=[], param_name="logisticregression__C", clf_name="decision"):
         X_train,X_test,y_train,y_test = self.train_test_data_split(random_state=1, test_size=0.3)
         X_train_std, X_test_std = self.std_X(X_train, X_test)
         from sklearn.model_selection import validation_curve
