@@ -34,6 +34,9 @@ for i in range(0, 8):
             save_file_name="./classifier_image/learning_curve_{}_C{}_G{}.pdf".format("svm", C[i], gamma[i]),
             clf_name="svm", C=C[i], gamma=gamma[i])
     classification.learning_curve_show(
+            save_file_name="./classifier_image/learning_curve_{}_n_nei{}.pdf".format("linear_svc", n_neighbors[i]),
+            clf_name="linear_svc", C=C[i])
+    classification.learning_curve_show(
             save_file_name="./classifier_image/learning_curve_{}_n_nei{}.pdf".format("knn", n_neighbors[i]),
             clf_name="knn", n_neighbors=n_neighbors[i])
 classification.learning_curve_show( save_file_name="./classifier_image/learning_curve_{}_C_small_G_small.pdf".format("svm"), clf_name="svm", C=0.001, gamma=0.001)
@@ -85,6 +88,9 @@ for i in range(0, 8):
     classification.learning_curve_show(
             save_file_name="./classifier_image_from_20181030/learning_curve_{}_n_nei{}.pdf".format("knn", n_neighbors[i]),
             clf_name="knn", n_neighbors=n_neighbors[i])
+    classification.learning_curve_show(
+            save_file_name="./classifier_image_from_20181030/learning_curve_{}_C_{}.pdf".format("linear_svc", n_neighbors[i]),
+            clf_name="linear_svc", C=C[i])
 classification.learning_curve_show( save_file_name="./classifier_image_from_20181030/learning_curve_{}_C_small_G_small.pdf".format("svm"),
         clf_name="svm", C=0.001, gamma=0.001)
 classification.learning_curve_show( save_file_name="./classifier_image_from_20181030/learning_curve_{}_C_small_G_large.pdf".format("svm"),
@@ -96,6 +102,8 @@ classification.learning_curve_show( save_file_name="./classifier_image_from_2018
 
 classification.validation_curve_show(save_file_name="./classifier_image_from_20181030/validation_curve_svc_C.pdf",
         param_range=C, param_name="svc__C", clf_name="svm")
+classification.validation_curve_show(save_file_name="./classifier_image_from_20181030/validation_curve_linear_svc_C.pdf",
+        param_range=C, param_name="linearsvc__C", clf_name="linear_svc")
 classification.validation_curve_show(save_file_name="./classifier_image_from_20181030/validation_curve_svc_gamma.pdf",
         param_range=gamma, param_name="svc__gamma", clf_name="svm")
 classification.validation_curve_show(save_file_name="./classifier_image_from_20181030/validation_curve_knn_n_nei.pdf",

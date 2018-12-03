@@ -36,6 +36,9 @@ for i in range(0, 8):
     tree.learning_curve_show(
             save_file_name="./tree_image_from_20181030/learning_curve_{}_{}.pdf".format("random_forest",current_max_depth),
             max_depth=current_max_depth, clf_name="random_forest")
+    tree.learning_curve_show(
+            save_file_name="./tree_image_from_20181030/learning_curve_{}_{}.pdf".format("random_forest_regressor",current_max_depth),
+            max_depth=current_max_depth, clf_name="random_forest_r")
     tree.decision_tree_classifier(save_file_name="tree_image_from_20181030/decision_tree_questionnaire_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
     tree.cross_validation(save_file_name="tree_image_from_20181030/cross_decision_tree_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
     tree.random_forest(random_state=i, max_depth=current_max_depth)
@@ -46,6 +49,8 @@ tree.validation_curve_show( "./tree_image_from_20181030/validation_curve_{}_max_
         param_range=max_depth, param_name="decisiontreeclassifier__max_depth", clf_name="decision")
 tree.validation_curve_show( "./tree_image_from_20181030/validation_curve_{}_max_depth.pdf".format("random_forest"),
         param_range=max_depth, param_name="randomforestclassifier__max_depth", clf_name="random_forest")
+tree.validation_curve_show( "./tree_image_from_20181030/validation_curve_{}_max_depth.pdf".format("random_forest_regressor"),
+        param_range=max_depth, param_name="randomforestregressor__max_depth", clf_name="random_forest_r")
 tree.grid_search()
 tree.logistic_regression()
 
@@ -83,6 +88,9 @@ for i in range(0, 8):
     tree.learning_curve_show(
             save_file_name="./tree_image/learning_curve_{}_{}.pdf".format("random_forest",current_max_depth),
             max_depth=current_max_depth, clf_name="random_forest")
+    tree.learning_curve_show(
+            save_file_name="./tree_image/learning_curve_{}_{}.pdf".format("random_forest_regressor",current_max_depth),
+            max_depth=current_max_depth, clf_name="random_forest_r")
     tree.decision_tree_classifier(save_file_name="tree_image/decision_tree_questionnaire_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
     tree.cross_validation(save_file_name="tree_image/cross_decision_tree_{}.pdf".format(current_max_depth), max_depth=current_max_depth)
     tree.random_forest(random_state=i, max_depth=current_max_depth)
