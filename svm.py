@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from dtreeviz.trees import *
 from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.preprocessing import Imputer
@@ -107,6 +108,17 @@ class Classification():
         print('Best estimator: {}'.format(svc_grid_search.best_estimator_))
 
         params = {
+            'C': [0.001, 0.01, 0.1, 1, 10, 100],
+        }
+        svc_grid_search = GridSearchCV(LinearSVC(), params, cv=10)
+        svc_grid_search.fit(X_train_std, y_train)
+        print('Train score: {:.3f}'.format(svc_grid_search.score(X_train_std, y_train)))
+        print('Test score: {:.3f}'.format(svc_grid_search.score(X_test_std, y_test)))
+        print('Confusion matrix:\n{}'.format(confusion_matrix(y_test, svc_grid_search.predict(X_test_std))))
+        print('Best parameters: {}'.format(svc_grid_search.best_params_))
+        print('Best estimator: {}'.format(svc_grid_search.best_estimator_))
+
+        params = {
             'n_neighbors': range(1,11)
         }
         svc_grid_search = GridSearchCV(KNeighborsClassifier(), params, cv=10)
@@ -123,6 +135,10 @@ class Classification():
                     decision_function_shape=None, degree=3, gamma=gamma, kernel='rbf',
                     max_iter=-1, probability=False, random_state=None, shrinking=True,
                     tol=0.001, verbose=False)
+        elif clf_name == "linear_svc":
+            clf = LinearSVC(C=C, class_weight=None, dual=True, fit_intercept=True,
+                    intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+                    multi_class='ovr', penalty='l2', random_state=None, tol=0.0001, verbose=0)
         elif clf_name == "knn":
             clf = KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
                     metric_params=None, n_jobs=1, n_neighbors=n_neighbors, p=2,

@@ -7,6 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 class Tree():
     def __init__(self, df):
@@ -59,6 +60,7 @@ class Tree():
         clf.fit(X_train_std, y_train)
         print("    [max_depth, score_mean, train_predict, test_predict]")
         print("   ", [max_depth, score.mean(), metrics.accuracy_score(y_train, clf.predict(X_train_std)), metrics.accuracy_score(y_test, clf.predict(X_test_std))])
+        self.f1_value(y_test, clf.predict(X_test_std))
         print("    ============ end =============")
 
     def grid_search(self):
@@ -80,8 +82,16 @@ class Tree():
         print("   ",clf.best_params_)
 
         params = {'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
-                'n_estimators': [10, 100, 300]}
+                'n_estimators': [10, 100]}
         clf = GridSearchCV(RandomForestClassifier(), params, cv = 10)
+        clf.fit(X = self.X, y = self.y)
+        print("   ",clf.best_estimator_)
+        print("   best_score: ",clf.best_score_)
+        print("   ",clf.best_params_)
+
+        params = {'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
+                'n_estimators': [10, 100]}
+        clf = GridSearchCV(RandomForestRegressor(), params, cv = 10)
         clf.fit(X = self.X, y = self.y)
         print("   ",clf.best_estimator_)
         print("   best_score: ",clf.best_score_)
@@ -104,6 +114,14 @@ class Tree():
             clf = RandomForestClassifier(
                     bootstrap=True, class_weight=None, criterion='gini',
                     max_depth=max_depth, max_features='auto', max_leaf_nodes=None,
+                    min_impurity_split=1e-07, min_samples_leaf=1,
+                    min_samples_split=2, min_weight_fraction_leaf=0.0,
+                    n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
+                    verbose=0, warm_start=False)
+        elif clf_name == "random_forest_r":
+            clf = RandomForestRegressor(
+                    bootstrap=True, criterion='mse', max_depth=max_depth,
+                    max_features='auto', max_leaf_nodes=None,
                     min_impurity_split=1e-07, min_samples_leaf=1,
                     min_samples_split=2, min_weight_fraction_leaf=0.0,
                     n_estimators=10, n_jobs=1, oob_score=False, random_state=None,
@@ -214,10 +232,17 @@ class Tree():
     def add_dummy_score(self):
         tmp_df = self.df.sort_values("score_std", ascending=False)
         df_size = len(self.df)
-        high_rate = int(df_size * 0.6)
+        high_rate = int(df_size * 0.7)
         threshold = tmp_df[:high_rate].iloc[-1].score_std
         print("正規化後の閾値: ", threshold)
         self.df.loc[self.df["score_std"] >= threshold, "score_dummy"] = 0 # High
         self.df.loc[self.df["score_std"] < threshold, "score_dummy"] = 1 # Low
         self.class_names = ["high", "low"]
+
+    def f1_value(self, true_score, predicted_score):
+        from sklearn.metrics import classification_report
+        y_true = true_score
+        y_pred = predicted_score
+        print("    =============== f1-値 =============")
+        print("    ",classification_report(y_true, y_pred, target_names=self.class_names))
 
