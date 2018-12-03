@@ -13,6 +13,7 @@ class Tree():
         self.df = df
         self.X = pd.DataFrame()
         self.y = pd.DataFrame()
+        self.class_names = []
 
     def set_X_and_y(self, objective_key=""):
         self.X = self.df.drop(objective_key, axis=1)
@@ -49,7 +50,7 @@ class Tree():
         clf = DecisionTreeClassifier(max_depth = max_depth)
         score = cross_val_score(estimator = clf, X = self.X, y = self.y, cv = 5)
         plt.figure()
-        viz = dtreeviz(clf, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=["high", "low"])
+        viz = dtreeviz(clf, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=self.class_names)
         viz.save(save_file_name)
         plt.close()
 
@@ -71,7 +72,7 @@ class Tree():
         print("   best_score: ",clf.best_score_)
         print("   ",clf.best_params_)
 
-        params = {'C': [0.001, 0.01, 0.1, 1, 10, 100, 1000]}
+        params = {'C': [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000]}
         clf = GridSearchCV(LogisticRegression(), params, cv = 10)
         clf.fit(X = self.X, y = self.y)
         print("   ",clf.best_estimator_)
@@ -79,7 +80,7 @@ class Tree():
         print("   ",clf.best_params_)
 
         params = {'max_depth': [2, 3, 4, 5, 6, 7, 8, 9],
-                'n_estimators': [10, 100]}
+                'n_estimators': [10, 100, 300]}
         clf = GridSearchCV(RandomForestClassifier(), params, cv = 10)
         clf.fit(X = self.X, y = self.y)
         print("   ",clf.best_estimator_)
@@ -188,7 +189,7 @@ class Tree():
         treeModel.fit(self.X, self.y)
         predicted = pd.DataFrame({'TreePredicted':treeModel.predict(self.X)})
         plt.figure()
-        viz = dtreeviz(treeModel, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=["high", "low"])
+        viz = dtreeviz(treeModel, self.X, self.y, target_name='score_dummy', feature_names=list(self.X.keys()), class_names=self.class_names)
         viz.save(save_file_name)
         plt.close()
         print("============== end ===============")
@@ -211,6 +212,12 @@ class Tree():
         self.df =  self.df.drop(drop_list, axis=1)
 
     def add_dummy_score(self):
-        self.df.loc[self.df["score_std"] >= -0.24, "score_dummy"] = 0 # High
-        self.df.loc[self.df["score_std"] < -0.24, "score_dummy"] = 1 # Low
+        tmp_df = self.df.sort_values("score_std", ascending=False)
+        df_size = len(self.df)
+        high_rate = int(df_size * 0.6)
+        threshold = tmp_df[:high_rate].iloc[-1].score_std
+        print("正規化後の閾値: ", threshold)
+        self.df.loc[self.df["score_std"] >= threshold, "score_dummy"] = 0 # High
+        self.df.loc[self.df["score_std"] < threshold, "score_dummy"] = 1 # Low
+        self.class_names = ["high", "low"]
 

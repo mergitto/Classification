@@ -24,8 +24,13 @@ class Classification():
         self.df =  self.df.drop(drop_list, axis=1)
 
     def add_dummy_score(self):
-        self.df.loc[self.df["score_std"] >= -0.24, "score_dummy"] = 0 # High
-        self.df.loc[self.df["score_std"] < -0.24, "score_dummy"] = 1 # Low
+        tmp_df = self.df.sort_values("score_std", ascending=False)
+        df_size = len(self.df)
+        high_rate = int(df_size * 0.6)
+        threshold = tmp_df[:high_rate].iloc[-1].score_std
+        print("正規化後の閾値: ", threshold)
+        self.df.loc[self.df["score_std"] >= threshold, "score_dummy"] = 0 # High
+        self.df.loc[self.df["score_std"] < threshold, "score_dummy"] = 1 # Low
 
     def std_X(self, X_train, X_test):
         # データの標準化処理
@@ -34,6 +39,10 @@ class Classification():
         X_train_std = sc.transform(X_train)
         X_test_std = sc.transform(X_test)
         return X_train_std, X_test_std
+
+    def drop_na(self, drop_na_list=[]):
+        self.df = self.df.dropna(subset=drop_na_list)
+        self.df = self.df.reset_index(drop=True)
 
     def cross_validation(self):
         from sklearn.model_selection import cross_val_score
